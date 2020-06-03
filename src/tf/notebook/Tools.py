@@ -1,4 +1,3 @@
-
 '''
 
 # This module allows for testing colab code
@@ -12,10 +11,11 @@ print(dir(tester))
 if the notebook was already started,
 THEN the notebook timestamps could be earlier than the mount_time
 however, it is unknown if the notebook timestamps persist across google sessions
-
 '''
 
 
+import requests
+import os
 from datetime import datetime
 #
 # assumes src is in the path
@@ -67,6 +67,78 @@ tester.hello_world()
 #  JupyterTestFramework a subclass
 #  ReplitTestFramework a subclass
 #  CliTestFramework a subclass
+
+#
+# TODO:  put in config file, fetch it
+#
+lesson_map = {
+    'base': '/src/dmap/lessons/',
+    'DMP:TFIDF': {
+        'base': 'tfidf',
+        'parts': 4,
+    }
+}
+
+class AssetReader(object):
+    def __init__(self, lesson_id):
+        asset_dir = os.environ.get('ASSET_PATH', None)
+        assert asset_dir is not None, 'ASSET_PATH not set'
+
+        self.base = asset_dir + lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
+        try:
+            from IPython.display import display, clear_output
+            self.player = display
+        except ImportError:
+            self.player = None
+
+    def _fetch(self, fp):
+        with open(fp, 'r') as fd:
+            return fd.read()
+
+    def view(self, page):
+        fq_path = "{:s}/part{:d}.html".format(self.base, page)
+        if self.player:
+            import IPython
+            from IPython.display import display, clear_output
+            text = self._fetch(fq_path)
+            display(IPython.display.HTML(text))
+        else:
+            print('viewer not available')
+        return ''
+
+
+'''
+lesson_map_URL = {
+    'base': 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/',
+    'DMP:TFIDF' : {
+        'base': 'tfidf',
+        'parts': 4,
+    }
+}
+class HtmlViewer(object):
+    def __init__(self, lesson_id):
+        self.base = lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
+        try:
+            from IPython.display import display, clear_output
+            self.player = display
+        except ImportError:
+            self.player = None
+
+    def _fetch(self, url):
+        return requests.get(url).text
+
+    def view(self, page):
+        url = "{:s}/part{:d}.html".format(self.base, page)
+        if self.player:
+            import IPython
+            from IPython.display import display, clear_output
+            text = self._fetch(url)
+            display(IPython.display.HTML(text))
+        else:
+            print('viewer not available')
+        return ''
+'''
+
 
 class TestFramework(object):
 
