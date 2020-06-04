@@ -292,6 +292,22 @@ class TestFramework(object):
         except ImportError as e:
             return 'unable to test with gui: ', str(e)
 
+    def download_solution(self):
+        valid, file_or_error = self.clean_notebook_for_download()
+        if valid:
+            print("solution.py contains valid python; it will be downloaded")
+            try:
+                from google.colab import files
+                files.download(file_or_error)
+            except ImportError:
+                # server side
+                pass
+        else:
+            print("solution.py contains invalid python")
+            print("FIX the following Errors")
+            print("You can tag questions on Piazza with", "{}".format(LESSON_ID))
+            print(file_or_error)
+
 
 #
 # assumes this file Tools.py is already installed via install_file
