@@ -98,11 +98,11 @@ class NBParser(object):
             code, min_time, max_time, u = self.parse_code(text)
             return min_time, max_time
 
-    def parse_code(self, text, as_is=False, remove_cell_if_has_magic=False):
+    def parse_code(self, text, as_is=False, remove_cell_if_all_magic=True):
 
         code = json.loads(text)
 
-        if as_is is True and remove_cell_if_has_magic is True:
+        if as_is is True and remove_cell_if_all_magic is True:
             self.logger.log("warning, is_is flag takes priority")
 
         # creation timestamp
@@ -122,6 +122,7 @@ class NBParser(object):
         for cell in code['cells']:
 
             cell_code = []
+            invalid_count = 0
             if cell['cell_type'] == 'code':
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
@@ -148,17 +149,14 @@ class NBParser(object):
                         if found:
                             line = comment_out(line)
                         elif illegal_code(line):
-                            if remove_cell_if_has_magic:
-                                cell_code = []
-                                break
-                            else:
-                                line = comment_out(line)
+                            invalid_count += 1
+                            line = comment_out(line)
                         else:
-                            # we will use the original line as is
                             pass
+                            # we will use the original line as is
 
-                    if len(line) > 0:
-                        cell_code.append(line.rstrip())
+                    # line could be empty
+                    cell_code.append(line.rstrip())
 
                 # option:  if a cell is mixed with magic and python
                 '''
@@ -169,14 +167,14 @@ class NBParser(object):
                       w = r.lower()
                    return FancyClass()
                 helper = build_object()
-                
                 # we DO NOT what that entire cell 
                 # to be discarded
-                
                 '''
 
-                # 1.  if the cell is all magic remove it
-                lines.extend(cell_code)
+               if remove_cell_if_all_magic:
+                   if len(cell_code) == invalid_count:
+                       cell_code = []
+               lines.extend(cell_code)
 
         return '\n'.join(lines), min_time, max_time, user
 
