@@ -119,13 +119,12 @@ class TestFramework(object):
         # parse sets the meta data, do before anything else
         self.parse_code(text)
 
-    def parse_code(self, text, as_is=False, remove_magic_cells=True):
-        py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
+    def parse_code(self, text, as_is=False):
+        py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is)
         self.client.get_meta().update(min_ts, max_ts, user)
         return py_code, min_ts, max_ts, user
 
-    def write_file(self, as_is=False, remove_magic_cells=True):
-
+    def write_file(self, as_is=False):
         """
            Downloads the ipython file
            parses the ipython file
@@ -143,7 +142,7 @@ class TestFramework(object):
             raise Exception(TestFramework.ERROR_MSG)
 
         # a tuple of values
-        results = self.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
+        results = self.parse_code(text, as_is=as_is)
         with open(py_fn, 'w') as fd:
             fd.write(results[0])
         return py_fn
@@ -179,7 +178,7 @@ class TestFramework(object):
         # remove magic cells
         # will remove the entire download_notebook cell
         # since it using google.files (see parser)
-        filename = self.write_file(as_is=False, remove_magic_cells=True)
+        filename = self.write_file(as_is=False)
         e, r = self.client.test_file(filename, syntax_only=True)
         if e is None:
             return True, filename
@@ -187,7 +186,7 @@ class TestFramework(object):
             return False, e
 
     def test_notebook(self, verbose=True, max_score=100):
-        filename = self.write_file(as_is=False, remove_magic_cells=True)
+        filename = self.write_file(as_is=False)
         e, r = self.client.test_file(filename)
 
         if verbose:
@@ -207,7 +206,7 @@ class TestFramework(object):
         if callable(fn):
             fn = fn.__name__
 
-        filename = self.write_file(as_is=False, remove_magic_cells=True)
+        filename = self.write_file(as_is=False)
         error, msg = self.client.test_function(filename, fn)
 
         if verbose:

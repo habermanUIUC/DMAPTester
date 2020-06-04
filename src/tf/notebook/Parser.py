@@ -46,18 +46,24 @@ class ParseValues(object):
         self.timestamp = timestamp
 
 
-def comment_out(line, options):
+def comment_out(line):
+    # respects the current indentation level
+    clean = line.rstrip()
+    m = INDENT_REGEX.match(clean)
+    # print('found space', m.start(1), m.end(1))
+    total = m.end(1) - m.start(1)
+    new_line = " " * total + 'pass #' + line.lstrip()
+    return new_line
+
+
+def matches(line, options):
     if len(options) > 0:
         clean = line.rstrip()
         for regex in options:
             if regex.match(clean):
                 #print('found pattern:', clean + ':')
-                m = INDENT_REGEX.match(clean)
-                #print('found space', m.start(1), m.end(1))
-                total = m.end(1) - m.start(1)
-                new_line = " " * total + 'pass #' + line.lstrip()
-                return True, new_line
-    return False, None
+                return True
+    return False
 
 
 def illegal_code(line):
@@ -92,11 +98,11 @@ class NBParser(object):
             code, min_time, max_time, u = self.parse_code(text)
             return min_time, max_time
 
-    def parse_code(self, text, as_is=False, remove_magic_cells=True):
+    def parse_code(self, text, as_is=False, remove_cell_if_has_magic=False):
 
         code = json.loads(text)
 
-        if as_is is True and remove_magic_cells is True:
+        if as_is is True and remove_cell_if_has_magic is True:
             self.logger.log("warning, is_is flag takes priority")
 
         # creation timestamp
@@ -138,16 +144,15 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-
-                        found, n_line = comment_out(line, self.options)
+                        found = matches(line, self.options)
                         if found:
-                            line = n_line
+                            line = comment_out(line)
                         elif illegal_code(line):
-                            if remove_magic_cells:
+                            if remove_cell_if_has_magic:
                                 cell_code = []
                                 break
                             else:
-                                line = 'pass #' + line
+                                line = comment_out(line)
                         else:
                             # we will use the original line as is
                             pass
