@@ -171,10 +171,10 @@ class NBParser(object):
                 # to be discarded
                 '''
 
-               if remove_cell_if_all_magic:
-                   if len(cell_code) == invalid_count:
-                       cell_code = []
-               lines.extend(cell_code)
+                if remove_cell_if_all_magic:
+                    if len(cell_code) == invalid_count:
+                        cell_code = []
+                lines.extend(cell_code)
 
         return '\n'.join(lines), min_time, max_time, user
 
