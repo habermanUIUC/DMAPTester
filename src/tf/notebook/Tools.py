@@ -60,6 +60,31 @@ def install_testing_framework(lesson_id, notebook_id):
 tester = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
 tester.hello_world()
 
+
+def install_testing_framework(lesson_id, notebook_id):
+    class Nop(object):
+        def __init__(self, e): self.e = e
+        def nop(self, *args, **kw): return("unable to test:" + self.e, None)
+        def __getattr__(self, _): return self.nop
+    try:
+        from tf.notebook import Tools
+        from tf.notebook import Parser
+        from tf.utils import Client
+        import importlib
+        importlib.reload(Parser)
+        importlib.reload(Tools)
+        importlib.reload(Client)
+        ide = Tools.TestFramework(lesson_id, notebook_id)
+        reader = Tools.AssetReader(lesson_id)
+        return (ide, reader)
+    except ImportError as e:
+        #import traceback
+        #traceback.print_exc()
+        # happens on the test side, or if code never mounted
+        return Nop(str(e)), None
+tester, reader = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
+tester.hello_world()
+
 '''
 
 # TODO:
@@ -68,76 +93,7 @@ tester.hello_world()
 #  ReplitTestFramework a subclass
 #  CliTestFramework a subclass
 
-#
-# TODO:  put in config file, fetch it
-#
-lesson_map = {
-    'base': '/src/dmap/lessons/',
-    'DMP:TFIDF': {
-        'base': 'tfidf',
-        'parts': 4,
-    }
-}
 
-class AssetReader(object):
-    def __init__(self, lesson_id):
-        asset_dir = os.environ.get('ASSET_PATH', None)
-        assert asset_dir is not None, 'ASSET_PATH not set'
-
-        self.base = asset_dir + lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
-        try:
-            from IPython.display import display, clear_output
-            self.player = display
-        except ImportError:
-            self.player = None
-
-    def _fetch(self, fp):
-        with open(fp, 'r') as fd:
-            return fd.read()
-
-    def view(self, page):
-        fq_path = "{:s}/part{:d}.html".format(self.base, page)
-        if self.player:
-            import IPython
-            from IPython.display import display, clear_output
-            text = self._fetch(fq_path)
-            display(IPython.display.HTML(text))
-        else:
-            print('viewer not available')
-        return ''
-
-
-'''
-lesson_map_URL = {
-    'base': 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/',
-    'DMP:TFIDF' : {
-        'base': 'tfidf',
-        'parts': 4,
-    }
-}
-class HtmlViewer(object):
-    def __init__(self, lesson_id):
-        self.base = lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
-        try:
-            from IPython.display import display, clear_output
-            self.player = display
-        except ImportError:
-            self.player = None
-
-    def _fetch(self, url):
-        return requests.get(url).text
-
-    def view(self, page):
-        url = "{:s}/part{:d}.html".format(self.base, page)
-        if self.player:
-            import IPython
-            from IPython.display import display, clear_output
-            text = self._fetch(url)
-            display(IPython.display.HTML(text))
-        else:
-            print('viewer not available')
-        return ''
-'''
 
 
 class TestFramework(object):
