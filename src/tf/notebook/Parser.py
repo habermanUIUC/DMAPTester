@@ -72,7 +72,7 @@ def illegal_code(line):
     bad_news = ['from google', 'import google', 'import IPython', 'from IPython']
 
     clean = line.lstrip()
-    if len(clean) > 0 and clean[0] in ['!', '%']:
+    if len(clean) > 0 and clean[0] in ['!', '%', '<']:
         return True
 
     remove_me = False
