@@ -305,7 +305,7 @@ class TestFramework(object):
         else:
             print("solution.py contains invalid python")
             print("FIX the following Errors")
-            print("You can tag questions on Piazza with", "{}".format(LESSON_ID))
+            print("You can tag questions on Piazza with", "{}".format(self.client.lesson_id))
             print(file_or_error)
 
 
