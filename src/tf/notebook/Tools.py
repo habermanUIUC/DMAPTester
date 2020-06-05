@@ -118,6 +118,8 @@ class TestFramework(object):
 
         # parse sets the meta data, do before anything else
         self.parse_code(text)
+        self.lesson_id = lesson_id
+        self.nb_id = notebook_id
 
     def parse_code(self, text, as_is=False):
         py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is)
@@ -305,7 +307,7 @@ class TestFramework(object):
         else:
             print("solution.py contains invalid python")
             print("FIX the following Errors")
-            print("You can tag questions on Piazza with", "{}".format(self.client.lesson_id))
+            print("You can tag questions on Piazza with", "{}".format(self.lesson_id))
             print(file_or_error)
 
 
