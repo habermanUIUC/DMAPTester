@@ -214,7 +214,7 @@ class TestFramework(object):
             # to make for easy printing
             warning = "If you change " + fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             if error is not None:
-                return "Tested: {:s}\nError: {:s}\n{:s}".format(fn, error, warning)
+                return "Tested: {:s}\nError: {:s}\n{:s}".format(fn, str(error), warning)
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
                 try:

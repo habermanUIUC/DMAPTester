@@ -1,5 +1,6 @@
 .idea/
 sandbox/
+sandbox_tmp/
 *.zip
 *.pxm
 debug_log.txt
