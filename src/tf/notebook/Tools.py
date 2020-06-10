@@ -187,19 +187,19 @@ class TestFramework(object):
         else:
             return False, e
 
-    def test_notebook(self, verbose=True, max_score=100):
+    def test_notebook(self, verbose=False, max_score=100):
         filename = self.write_file(as_is=False)
         e, r = self.client.test_file(filename)
 
-        if verbose:
+        if not verbose:
             # make result user friendly for display
             if e is None:
                 score = int(float(r.get('score', 0)))
                 return "Score {:d}/{:d}".format(score, max_score)
             else:
                 return "ERROR: {:s}".format(str(e))
-
-        return e, r
+        else:
+            return e, r
 
     def test_function(self, fn, verbose=True):
 

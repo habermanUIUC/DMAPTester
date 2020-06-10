@@ -10,7 +10,7 @@ ZIP_PATH = os.path.dirname(parent)
 if ZIP_PATH not in sys.path:
     sys.path.append(ZIP_PATH)
 
-from tf.utils import ZipLib
+from tf.utils import ZipLib  # if error make sure python3 is running
 from tf.utils import Client
 from tf.utils import SandBox
 from tf.utils import GradescopeResultParser as GRP
@@ -28,8 +28,9 @@ from tf.utils import GradescopeResultParser as GRP
 server = 'http://0.0.0.0:5000'
 server = 'localhost:8080'
 server = 'http://192.168.1.78:8080'  # laptop localhost
-server = 'http://127.0.0.1:8080'
+
 server = 'http://ec2-18-219-123-225.us-east-2.compute.amazonaws.com:8080'
+server = 'http://127.0.0.1:8080'
 
 
 # python3 client.py --tag INFO:PPM --input test --fn worst_zip
@@ -58,18 +59,20 @@ if __name__ == "__main__":
 
     kv = {"fn": fn_name}
     response = client.send_zip(zip_file, kv)
+    #print(response)
 
     error   = response['error_code']
     payload = response['payload']
     fp = "{:s}/{:s}".format(sandbox.get_sandbox_dir(), "results.json")
-    import json
-    with open(fp, 'w') as fd:
-        pp = json.dumps(payload['test_result'], indent=4)
-        fd.write(pp)
-
     if error is None:
         print(payload['test_result'])
         GRP.do_matplot(payload['test_result'])
+
+        import json
+        with open(fp, 'w') as fd:
+            pp = json.dumps(payload['test_result'], indent=4)
+            fd.write(pp)
+
     else:
         print('ERROR', error)
         print(payload)
