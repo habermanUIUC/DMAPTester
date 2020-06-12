@@ -2,8 +2,55 @@
 import json
 import re
 
+
+'''
+BETTER PARSER ???
+only benefit is, you could remove the need to catch the
+exceptions on loading the IDE/tester on the server side
+
+
+IF you export ONLY functions (and constants)
+then it would be safe to remove the exception handling
+on IPython, etc.  May not be worth it 
+
+better idea to hoist all scope0 code and place into a function
+??
+
+KEEP these (note they break the rules)
+------------
+1. CONSTANT = 3.5
+2. apples = \    # crossing line boundaries
+{ abc: 123 }
+
+3. 1import xbb from abc
+4. from xbb import abc
+5. import x
+
+
+what about 
+SOME_CONSTANT = get_some_value()
+
+sanitize 
+  if line is ^def [A-Za-z_]+ OR ^class [A-Za-z_] 
+     keep
+  else if line starts with whitespace 
+     keep  could be anything inside a function/class OR another function
+  else
+     # line begins with letter/digit/underscore (non whitespace)
+     KEEP only if '=' is there
+     allows for module level data to be kept
+'''
+
+def sanitize(code):
+    code = code.strip()
+    return code
+
+
+# print calls don't need to be run
 print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
+
+# function calls never assigned to a value
 scope0_function_call = re.compile(r'^[a-z_][a-z0-9_]*\(', re.IGNORECASE)
 # removing scope0 function calls may not be too useful
 # r = some_dumb_fn()
@@ -176,7 +223,8 @@ class NBParser(object):
                         cell_code = []
                 lines.extend(cell_code)
 
-        return '\n'.join(lines), min_time, max_time, user
+        code = sanitize('\n'.join(lines))
+        return code, min_time, max_time, user
 
     def parse_markdown(self, text):
 
