@@ -10,7 +10,9 @@ try:
     VERSION = '04.20.2020'
     SERVER  = 'http://localhost:8080'
     SERVER  = 'http://75.156.71.78:8080'    # MEH
-    SERVER  = 'http://18.219.123.225:8080'  # AWS
+    SERVER  = 'http://18.219.123.225:8080'  # AWS v1
+    SERVER  = 'http://13.59.43.215:8080'    # AWS v2
+
     import ipywidgets as widgets
     from IPython.display import display
     is_notebook = True
