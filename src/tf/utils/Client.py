@@ -7,7 +7,7 @@ from tf.utils.SandBox import SandBox
 import tf.utils.ZipLib as ZipLib
 
 try:
-    VERSION = '04.20.2020'
+    VERSION = '06.20.2020'
     SERVER  = 'http://localhost:8080'
     SERVER  = 'http://75.156.71.78:8080'    # MEH
     SERVER  = 'http://18.219.123.225:8080'  # AWS v1
@@ -123,12 +123,12 @@ class ClientTest(object):
         kv = self.meta.kv()
         for k in kv:
             v = kv[k]
-            self.logger.log('adding', k, v, ' TO ', post_data)
+            # self.logger.log('adding', k, v, ' TO ', post_data)
             if isinstance(v, dict):
                 v = json.dumps(kv[k])
             post_data[k] = v
 
-        self.logger.log('sending out test')
+        self.logger.log('sending to test')
         filename = os.path.basename(zipfile)
         with open(zipfile, 'rb') as fd:
             response = requests.post(end_point, data=post_data,
