@@ -51,7 +51,8 @@ print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 # function calls never assigned to a value
-scope0_function_call = re.compile(r'^[a-z_][a-z0-9_]*\(', re.IGNORECASE)
+# allow ide.tester.some_function()
+scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\(', re.IGNORECASE)
 # removing scope0 function calls may not be too useful
 # r = some_dumb_fn()
 # print(r)
