@@ -2,6 +2,11 @@
 import json
 import re
 
+# TODO:  sanitize option
+# allows to download python
+# removes all ide.* code
+# removes the install ide code too
+#
 
 '''
 BETTER PARSER ???
