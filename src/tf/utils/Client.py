@@ -122,13 +122,13 @@ class ClientTest(object):
         error = None
         data = None
         if response.status_code != 200:
-            self.logger.log('unable to list', response.status_code)
             error = str(response.status_code)
+            self.logger.log('unable to list', error)
         else:
-            data = response.json()  # json.loads(r.text)
-            error = data['error_code']
+            r_data = response.json()  # json.loads(r.text)
+            error = r_data['error_code']
             if error is None:
-                data = data['payload']
+                data = r_data['payload']
 
         return error, data
 
