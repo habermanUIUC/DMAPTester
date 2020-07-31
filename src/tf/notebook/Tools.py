@@ -187,6 +187,14 @@ class TestFramework(object):
         else:
             return False, e
 
+    def list_tests(self):
+        e, r = self.client.get_tests()
+        if e is None:
+            print(r)
+        else:
+            print('Error', e)
+        return None
+
     def test_notebook(self, verbose=False, max_score=100):
         filename = self.write_file(as_is=False)
         e, r = self.client.test_file(filename)

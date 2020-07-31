@@ -3,6 +3,11 @@
 
 '''
 
+def get_tests(data):
+    names = []
+    for test in data['tests']:
+        names.append(test['name'])
+    return names
 
 def partition_scores(data):
     num_tests = len(data["tests"])

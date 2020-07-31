@@ -80,6 +80,30 @@ class Nop(object):
     def nop(self, *args, **kw):
         return self.msg
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def __getattr__(self, _):
         return self.nop
 

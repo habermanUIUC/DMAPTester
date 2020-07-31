@@ -110,6 +110,28 @@ class ClientTest(object):
         else:
             self.logger.log('register session at', m_time)
 
+        return None
+
+    def get_tests(self):
+        end_point = "{:s}/list".format(self.server)
+        post_data = {"lesson_id": self.meta.lesson_id,
+                     "u_id": self.meta.u_id,
+                     "u_name": self.meta.u_name}
+
+        response = requests.post(end_point, data=post_data)
+        error = None
+        data = None
+        if response.status_code != 200:
+            self.logger.log('unable to list', response.status_code)
+            error = str(response.status_code)
+        else:
+            data = response.json()  # json.loads(r.text)
+            error = data['error_code']
+            if error is None:
+                data = data['payload']
+
+        return error, data
+
     def send_zip(self, zipfile, extra_kv={}):
 
         try:
