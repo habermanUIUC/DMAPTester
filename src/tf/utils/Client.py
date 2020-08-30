@@ -13,8 +13,9 @@ try:
     SERVER = 'http://75.156.71.78:8080'     # MEH
     SERVER = 'http://18.219.123.225:8080'   # AWS v1
     SERVER = 'http://13.59.43.215:8080'     # AWS v2
-    SERVER = 'http://18.222.172.177:8080'   # AWS ec3
     SERVER = 'http://174.136.110.124:8080'  # neo 3gne
+
+    SERVER = 'http://18.222.172.177:8080'   # AWS v3
 
 
     import ipywidgets as widgets
