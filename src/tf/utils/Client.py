@@ -18,6 +18,9 @@ try:
 
     SERVER = 'http://174.136.110.124:8080'  # neo 3gne
 
+    # 08.30.2020 arpnetworks issue, switched to AWS
+    # 08.31.2020 switched back to arpnetworks
+
 
     import ipywidgets as widgets
     from IPython.display import display
