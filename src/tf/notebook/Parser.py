@@ -52,12 +52,12 @@ def sanitize(code):
 
 
 # print calls don't need to be run
-print_regex  = re.compile(r'^\s*print\(')
+print_regex  = re.compile(r'^\s*print\s*\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 # function calls never assigned to a value
 # allow ide.tester.some_function()
-scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\(', re.IGNORECASE)
+scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\s*\(', re.IGNORECASE)
 # removing scope0 function calls may not be too useful
 # r = some_dumb_fn()
 # print(r)
@@ -80,30 +80,6 @@ class Nop(object):
     def nop(self, *args, **kw):
         return self.msg
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def __getattr__(self, _):
         return self.nop
 
@@ -113,7 +89,6 @@ try:
 except ImportError:
     print("logger not being used")
     logger = Nop()
-
 
 
 class ParseValues(object):
