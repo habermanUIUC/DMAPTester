@@ -114,7 +114,7 @@ class TestFramework(object):
         text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, filename=TestFramework.JSON_FILE)
         if not ToolBox.is_ipython(text):
             print(TestFramework.ERROR_MSG)
-            raise Exception(TestFramework.ERROR_MSG)
+            raise IOError(TestFramework.ERROR_MSG)
 
         # parse sets the meta data, do before anything else
         self.parse_code(text)
