@@ -54,8 +54,7 @@ def install_gd_file(doc_id, filename=None, cache_time=1):
             r = urllib.request.urlopen(url)
             status = r.getcode()
             if status != 200:
-                print("unable to download google doc with id:", doc_id)
-                print('status', r.status_code)
+                print(r.status_code, "unable to download google doc with id:", doc_id)
                 return None
             return str(r.read().decode('UTF-8'))
 
