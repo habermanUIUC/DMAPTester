@@ -66,8 +66,7 @@ def install_gd_file(doc_id, filename=None, cache_time=1):
             if r.status_code != 200:
                 logger.log('bad request:', r.status_code)
                 logger.log('headers:', r.headers)
-                print("unable to download google doc with id:", doc_id)
-                print('status', r.status_code)
+                print(r.status_code, "unable to download google doc with id:", doc_id)
                 return None
             return r.text
 
