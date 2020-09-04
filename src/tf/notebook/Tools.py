@@ -106,6 +106,8 @@ class TestFramework(object):
 
         if client is None:
             client = Client.ClientTest(lesson_id, notebook_id)
+        else:
+            print('TestFramework using custom client')
 
         self.logger = SandBox().get_logger()
         self.client = client
