@@ -320,6 +320,8 @@ class TestFramework(object):
             print("You can tag questions on Piazza with", "{}".format(self.lesson_id))
             print(file_or_error)
 
+    def test_functionality(self, fn, verbose=True):
+        return self.test_function(fn, verbose=verbose)
 
 #
 # assumes this file Tools.py is already installed via install_file

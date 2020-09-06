@@ -220,3 +220,6 @@ class ClientTest(object):
         else:
             return error, "0:0:NA"
 
+    def test_functionality(self, filename, fn_name):
+        return self.test_function(filename, fn_name)
+
