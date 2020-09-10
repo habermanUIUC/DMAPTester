@@ -108,7 +108,7 @@ def comment_out(line):
     return new_line
 
 
-def matches(line, options):
+def single_line_matches(line, options):
     if len(options) > 0:
         clean = line.rstrip()
         for regex in options:
@@ -140,9 +140,10 @@ class NBParser(object):
 
     def __init__(self, options=[]):
         self.logger = logger
-        self.options = [print_regex, scope0_function_call]
+        self.single_line = [print_regex]
+        self.multi_line  = [scope0_function_call]
         for o in options:
-            self.options.append(o)
+            self.single_line.append(o)
 
     def get_times(self, filename):
         with open(filename, 'r') as fd:
@@ -197,7 +198,7 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-                        found = matches(line, self.options)
+                        found = single_line_matches(line, self.single_line)
                         if found:
                             line = comment_out(line)
                         elif illegal_code(line):
@@ -226,6 +227,12 @@ class NBParser(object):
                 if remove_cell_if_all_magic:
                     if len(cell_code) == invalid_count:
                         cell_code = []
+
+                # search for multi-line comment out opportunities
+                '''
+                
+                '''
+
                 lines.extend(cell_code)
 
         code = sanitize('\n'.join(lines))
