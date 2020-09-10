@@ -136,14 +136,33 @@ def illegal_code(line):
     return remove_me
 
 
+import ast
+import astunparse
+
+class CodeCleaner(object):
+
+    def __init__(self):
+        self.do_match = [print_regex, scope0_function_call]
+
+    def clean(self, code):
+        # a parse tree, followed by an unparse:
+        #    normalize all function calls that span multiple lines, into a single line
+        #    remove comments
+        tree = ast.parse(code)
+        lines = astunparse.unparse(tree).split("\n")
+        clean = []
+        for line in lines:
+            found = single_line_matches(line, self.do_match)
+            if found:
+                line = comment_out(line)
+            clean.append(line)
+        return '\n'.join(clean)
+
+
 class NBParser(object):
 
     def __init__(self, options=[]):
         self.logger = logger
-        self.single_line = [print_regex]
-        self.multi_line  = [scope0_function_call]
-        for o in options:
-            self.single_line.append(o)
 
     def get_times(self, filename):
         with open(filename, 'r') as fd:
@@ -198,15 +217,12 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-                        found = single_line_matches(line, self.single_line)
-                        if found:
-                            line = comment_out(line)
-                        elif illegal_code(line):
+                        if illegal_code(line):
                             invalid_count += 1
                             line = comment_out(line)
                         else:
-                            pass
                             # we will use the original line as is
+                            pass
 
                     # line could be empty
                     cell_code.append(line.rstrip())
@@ -227,11 +243,6 @@ class NBParser(object):
                 if remove_cell_if_all_magic:
                     if len(cell_code) == invalid_count:
                         cell_code = []
-
-                # search for multi-line comment out opportunities
-                '''
-                
-                '''
 
                 lines.extend(cell_code)
 

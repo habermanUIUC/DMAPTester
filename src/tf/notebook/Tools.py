@@ -145,10 +145,15 @@ class TestFramework(object):
             print(TestFramework.ERROR_MSG)
             raise Exception(TestFramework.ERROR_MSG)
 
+        # convert the code from .ipynb to .py
         # a tuple of values
         results = self.parse_code(text, as_is=as_is)
+
+        # clean the code (remove comments, superfluous calls)
+        cleaner = Parser.CodeCleaner()
+        code = cleaner.clean(results[0])
         with open(py_fn, 'w') as fd:
-            fd.write(results[0])
+            fd.write(code)
         return py_fn
 
     #
