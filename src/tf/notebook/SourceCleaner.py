@@ -105,8 +105,8 @@ def install_ide(lesson_id, nb_id, reload=True):
         def nop(self, *args, **kw): return ("unable to test:" + self.e, None)
         def __getattr__(self, _): return self.nop
     class IDE():
-        tester = Nop(str(e))
-        reader = Nop(str(e))
+        tester = Nop("")
+        reader = Nop("")
     return IDE()
 '''
         self.function_name = 'install_ide'
