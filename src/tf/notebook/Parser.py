@@ -50,19 +50,22 @@ def sanitize(code):
     code = code.strip()
     return code
 
+def illegal_code(line):
 
-# print calls don't need to be run
-print_regex  = re.compile(r'^\s*print\s*\(')
-INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
+    # bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
+    bad_news = ['from google', 'import google', 'import IPython', 'from IPython']
 
-# function calls never assigned to a value
-# allow ide.tester.some_function()
-scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\s*\(', re.IGNORECASE)
-# removing scope0 function calls may not be too useful
-# r = some_dumb_fn()
-# print(r)
-# unless you comment out print first
-# then do dead code elimination
+    clean = line.lstrip()
+    if len(clean) > 0 and clean[0] in ['!', '%', '<']:
+        return True
+
+    remove_me = False
+    for b in bad_news:
+        if clean.find(b) >= 0:
+            remove_me = True
+            break
+
+    return remove_me
 
 #
 # assumes src/tf is in the path
@@ -90,74 +93,13 @@ except ImportError:
     print("logger not being used")
     logger = Nop()
 
+from tf.notebook import SourceCleaner
 
 class ParseValues(object):
     def __init__(self, code, user, timestamp):
         self.code = code
         self.user = user
         self.timestamp = timestamp
-
-
-def comment_out(line):
-    # respects the current indentation level
-    clean = line.rstrip()
-    m = INDENT_REGEX.match(clean)
-    # print('found space', m.start(1), m.end(1))
-    total = m.end(1) - m.start(1)
-    new_line = " " * total + 'pass #' + line.lstrip()
-    return new_line
-
-
-def single_line_matches(line, options):
-    if len(options) > 0:
-        clean = line.rstrip()
-        for regex in options:
-            if regex.match(clean):
-                #print('found pattern:', clean + ':')
-                return True
-    return False
-
-
-def illegal_code(line):
-
-    # bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
-    bad_news = ['from google', 'import google', 'import IPython', 'from IPython']
-
-    clean = line.lstrip()
-    if len(clean) > 0 and clean[0] in ['!', '%', '<']:
-        return True
-
-    remove_me = False
-    for b in bad_news:
-        if clean.find(b) >= 0:
-            remove_me = True
-            break
-
-    return remove_me
-
-
-import ast
-import astunparse
-
-class CodeCleaner(object):
-
-    def __init__(self):
-        self.do_match = [print_regex, scope0_function_call]
-
-    def clean(self, code):
-        # a parse tree, followed by an unparse:
-        #    normalize all function calls that span multiple lines, into a single line
-        #    remove comments
-        tree = ast.parse(code)
-        lines = astunparse.unparse(tree).split("\n")
-        clean = []
-        for line in lines:
-            found = single_line_matches(line, self.do_match)
-            if found:
-                line = comment_out(line)
-            clean.append(line)
-        return '\n'.join(clean)
-
 
 class NBParser(object):
 
@@ -219,7 +161,7 @@ class NBParser(object):
                     if not as_is:
                         if illegal_code(line):
                             invalid_count += 1
-                            line = comment_out(line)
+                            line = SourceCleaner.comment_out(line)
                         else:
                             # we will use the original line as is
                             pass

@@ -22,7 +22,7 @@ from datetime import datetime
 #
 from tf.utils import Client, ToolBox
 from tf.utils.SandBox import SandBox
-from tf.notebook import Parser
+from tf.notebook import Parser, SourceCleaner
 
 import json
 
@@ -148,10 +148,12 @@ class TestFramework(object):
         # convert the code from .ipynb to .py
         # a tuple of values
         results = self.parse_code(text, as_is=as_is)
+        code = results[0]
 
         # clean the code (remove comments, superfluous calls)
-        cleaner = Parser.CodeCleaner()
-        code = cleaner.clean(results[0])
+        if not as_is:
+            cleaner = SourceCleaner.CodeCleaner()
+            code = cleaner.clean(code)
         with open(py_fn, 'w') as fd:
             fd.write(code)
         return py_fn
