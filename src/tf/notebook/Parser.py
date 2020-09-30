@@ -50,6 +50,13 @@ def sanitize(code):
     code = code.strip()
     return code
 
+MAGIC = ['!', '%', '<']
+
+def magic_block(line):
+    # %%html
+    clean = line.lstrip()
+    return len(clean) > 0 and clean[0] in MAGIC and clean[1] in MAGIC
+
 def illegal_code(line):
 
     # bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
@@ -159,6 +166,10 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
+                        if magic_block(line):
+                            # we are done
+                            cell_code = []
+                            break
                         if illegal_code(line):
                             invalid_count += 1
                             line = SourceCleaner.comment_out(line)
