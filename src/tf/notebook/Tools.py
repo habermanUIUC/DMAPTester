@@ -154,6 +154,8 @@ class TestFramework(object):
         if not as_is:
             cleaner = SourceCleaner.CodeCleaner()
             code = cleaner.clean(code)
+
+        self.logger.log('creating', py_fn)
         with open(py_fn, 'w') as fd:
             fd.write(code)
         return py_fn
