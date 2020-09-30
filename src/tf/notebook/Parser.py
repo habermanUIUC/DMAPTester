@@ -51,11 +51,12 @@ def sanitize(code):
     return code
 
 MAGIC = ['!', '%', '<']
+MAGIC_MARKER = '%'
 
 def magic_block(line):
     # %%html
     clean = line.lstrip()
-    return len(clean) > 0 and clean[0] in MAGIC and clean[1] in MAGIC
+    return len(clean) > 0 and clean[0] == MAGIC_MARKER
 
 def illegal_code(line):
 
