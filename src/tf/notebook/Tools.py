@@ -124,9 +124,14 @@ class TestFramework(object):
         self.nb_id = notebook_id
 
     def parse_code(self, text, as_is=False):
-        py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is)
-        self.client.get_meta().update(min_ts, max_ts, user)
-        return py_code, min_ts, max_ts, user
+        try:
+            py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is)
+            self.client.get_meta().update(min_ts, max_ts, user)
+            return py_code, min_ts, max_ts, user
+        except Exception as e:
+            self.logger.log('ERROR on parse', e)
+            print('code was unable to be parsed: ask for help')
+            return '', 0, 0, ''
 
     def write_file(self, as_is=False):
         """
