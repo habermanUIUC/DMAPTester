@@ -101,7 +101,11 @@ except ImportError:
     print("logger not being used")
     logger = Nop()
 
-from tf.notebook import SourceCleaner
+try:
+   from tf.notebook import SourceCleaner
+except ImportError:
+   import SourceCleaner
+
 
 class ParseValues(object):
     def __init__(self, code, user, timestamp):
