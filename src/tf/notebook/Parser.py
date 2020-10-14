@@ -98,7 +98,7 @@ try:
    from tf.utils.SandBox import SandBox
    logger = SandBox().get_logger()
 except ImportError:
-    print("logger not being used")
+    # don't print out anything
     logger = Nop()
 
 try:

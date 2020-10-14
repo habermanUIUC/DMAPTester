@@ -1,4 +1,3 @@
-
 import ast
 import astunparse
 import re
@@ -10,12 +9,14 @@ INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 # function calls never assigned to a value
 # allow ide.tester.some_function()
-scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\s*\(', re.IGNORECASE)
+#scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\s*\(', re.IGNORECASE)
+scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\(', re.IGNORECASE)
 # removing scope0 function calls may not be too useful
 # r = some_dumb_fn()
 # print(r)
 # unless you comment out print first
 # then do dead code elimination
+# if (a == b):  looks like a function call
 
 def comment_out(line):
     # respects the current indentation level
