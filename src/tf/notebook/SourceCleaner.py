@@ -9,14 +9,15 @@ INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 # function calls never assigned to a value
 # allow ide.tester.some_function()
-#scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\s*\(', re.IGNORECASE)
-scope0_function_call = re.compile(r'^[a-z_][.a-z0-9_]*\(', re.IGNORECASE)
+#scope0_function_call = re.compile(r'^([a-z_][.a-z0-9_]*)\s*\(', re.IGNORECASE)
+scope0_function_call = re.compile(r'^([a-z_][.a-z0-9_]*)\s*\([^:]+$', re.IGNORECASE)
 # removing scope0 function calls may not be too useful
 # r = some_dumb_fn()
 # print(r)
 # unless you comment out print first
 # then do dead code elimination
-# if (a == b):  looks like a function call
+# if(a == b):  looks like a function call
+# if valid(a):
 
 def comment_out(line):
     # respects the current indentation level
@@ -126,3 +127,29 @@ def install_ide(lesson_id, nb_id, reload=True):
         cleaner = FunctionReplacer(self.function_name, self.node)
         clean = cleaner.visit(tree)
         return astunparse.unparse(clean)
+
+
+if __name__ == "__main__":
+
+    tests = [
+        ('if(valid == 0):', False),
+        ('if valid(a):', False),
+        ('if(valid(a)):', False),
+        ('ide.tester.test(a)', True),
+        ('x = test(a)', False),
+        ('print("mike")', True),
+    ]
+
+    for idx, t in enumerate(tests):
+        (code, expect) = t
+        ans = single_line_matches(code, [scope0_function_call])
+        if ans != expect:
+            print('ISSUE thinks this should be removed')
+            print(re.findall(scope0_function_call, code))
+        else:
+            if ans:
+                print('comment this out', code)
+            else:
+                print('keep', code)
+
+
