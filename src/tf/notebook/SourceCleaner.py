@@ -147,9 +147,32 @@ if __name__ == "__main__":
             print('ISSUE thinks this should be removed')
             print(re.findall(scope0_function_call, code))
         else:
-            if ans:
-                print('comment this out', code)
-            else:
-                print('keep', code)
+            pass
+            #if ans:
+            #    print('comment this out', code)
+            #else:
+            #    print('keep', code)
 
+    blk = """\
+ide.reader.view_section(6)
+t1 = 'rock'
+t2 = 'paper'
+if winner_RPS(t1, t2) != t2:
+    print('Test FAIL')
+if (winner_RPS(t1, t2) != t2):  # wow what we got
+    print('Test FAIL')
+if winner_RPS(t1, t2) != t2:  # wow what we got
+    print('Test FAIL')
+import random
+values = 'rock,paper,scissors'.split(',')
+p1 = random.choice(values)
+print(p1)
+ide_some('bad news')
+"""
+    lines = blk.split('\n')
+    for line in lines:
+        ans = single_line_matches(line, [print_regex, scope0_function_call])
+        if ans:
+            line = comment_out(line)
+        print(line)
 

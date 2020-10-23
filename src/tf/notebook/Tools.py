@@ -100,6 +100,7 @@ class TestFramework(object):
 
     JSON_FILE    = '{:s}/solution.json'.format(SandBox().get_sandbox_dir())
     PYTHON_FILE = '{:s}/solution.py'.format(SandBox().get_sandbox_dir())
+    TMP_PYTHON_FILE = '{:s}/tmp.py'.format(SandBox().get_sandbox_dir())
     ERROR_MSG = "Make notebook viewable"
 
     def __init__(self, lesson_id, notebook_id, client=None):
@@ -154,6 +155,10 @@ class TestFramework(object):
         # a tuple of values
         results = self.parse_code(text, as_is=as_is)
         code = results[0]
+
+        self.logger.log('before parsing', TestFramework.TMP_PYTHON_FILE)
+        with open(TestFramework.TMP_PYTHON_FILE, 'w') as fd:
+            fd.write(code)
 
         # clean the code (remove comments, superfluous calls)
         if not as_is:
