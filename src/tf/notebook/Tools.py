@@ -216,19 +216,32 @@ class TestFramework(object):
             print('Error', e)
         return None
 
-    def test_notebook(self, verbose=False, max_score=100):
+    def test_notebook(self, verbose=False, as_is=False, max_score=100):
         filename = self.write_file(as_is=False)
         e, r = self.client.test_file(filename)
 
-        if not verbose:
-            # make result user friendly for display
-            if e is None:
-                score = int(float(r.get('score', 0)))
-                return "Score {:d}/{:d}".format(score, max_score)
-            else:
-                return "ERROR: {:s}".format(str(e))
-        else:
+        if e is not None:
+            return "ERROR: {:s}".format(str(e))
+
+        if as_is:
             return e, r
+
+        score = int(float(r.get('score', 0)))
+        score_msg = "Score {:d}/{:d}".format(score, max_score)
+        if not verbose:
+            return score_msg
+
+        # verbose output
+        buffer = []
+        for t in r.get('tests', []):
+            name = t.get('name', 'n/a')
+            score = t.get('score', 0)
+            max_score = t.get('max_score', 0)
+            output = t.get('output', '')
+            buffer.append("{} {}/{}\n{}".format(name, score, max_score, output))
+
+        return "\n".join(buffer)
+
 
     def test_function(self, fn, verbose=True):
 
