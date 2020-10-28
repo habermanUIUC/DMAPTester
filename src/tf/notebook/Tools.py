@@ -232,7 +232,7 @@ class TestFramework(object):
             return score_msg
 
         # verbose output
-        buffer = []
+        buffer = [score_msg]
         for t in r.get('tests', []):
             name = t.get('name', 'n/a')
             score = t.get('score', 0)
@@ -242,13 +242,14 @@ class TestFramework(object):
 
         return "\n".join(buffer)
 
-
     def test_function(self, fn, verbose=True):
 
         assert fn is not None, "fn is None"
 
+        msg = "your code"
         if callable(fn):
             fn = fn.__name__
+            msg = fn
 
         filename = self.write_file(as_is=False)
         error, msg = self.client.test_function(filename, fn)
@@ -256,7 +257,7 @@ class TestFramework(object):
         if verbose:
             # if it's verbose, just return a single string
             # to make for easy printing
-            warning = "If you change " + fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
+            warning = "If you change " + msg + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             if error is not None:
                 return "Tested: {:s}\nError: {:s}\n{:s}".format(fn, str(error), warning)
             else:
