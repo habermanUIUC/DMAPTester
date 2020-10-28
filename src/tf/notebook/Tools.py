@@ -246,10 +246,10 @@ class TestFramework(object):
 
         assert fn is not None, "fn is None"
 
-        msg = "your code"
+        what = "your code"
         if callable(fn):
             fn = fn.__name__
-            msg = fn
+            what = fn
 
         filename = self.write_file(as_is=False)
         error, msg = self.client.test_function(filename, fn)
@@ -257,7 +257,7 @@ class TestFramework(object):
         if verbose:
             # if it's verbose, just return a single string
             # to make for easy printing
-            warning = "If you change " + msg + ", SAVE the notebook (⌘/Ctrl s) before retesting"
+            warning = "If you change " + what + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             if error is not None:
                 return "Tested: {:s}\nError: {:s}\n{:s}".format(fn, str(error), warning)
             else:
