@@ -227,7 +227,7 @@ class TestFramework(object):
             return e, r
 
         score = int(float(r.get('score', 0)))
-        score_msg = "Score {:d}/{:d}".format(score, max_score)
+        score_msg = "Score {:d}/{:d}\n".format(score, max_score)
         if not verbose:
             return score_msg
 
@@ -237,7 +237,7 @@ class TestFramework(object):
             name = t.get('name', 'n/a')
             score = t.get('score', 0)
             max_score = t.get('max_score', 0)
-            output = t.get('output', '')
+            output = t.get('output', '').strip()
             buffer.append("{} {}/{}\n{}".format(name, score, max_score, output))
 
         return "\n".join(buffer)
