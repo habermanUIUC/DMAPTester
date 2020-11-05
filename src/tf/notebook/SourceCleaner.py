@@ -18,6 +18,12 @@ scope0_function_call = re.compile(r'^([a-z_][.a-z0-9_]*)\s*\([^:]+$', re.IGNOREC
 # then do dead code elimination
 # if(a == b):  looks like a function call
 # if valid(a):
+#
+# print('''
+# apples are red
+# violets are blue
+# and so goes my sled
+# ''')
 
 def comment_out(line):
     # respects the current indentation level
@@ -53,9 +59,12 @@ class CodeCleaner(object):
 
         # does the full AST parse, and unparse
         # unparse 1.6.3 keeps dictionaries as a single line
+        # print statements that span mulitple lines are now on a single line
+
         cleaner = IDECodeReplacer()
         code = cleaner.replace_function(code)
         lines = code.split("\n")
+
 
         # before we did function cleaning
         # tree = ast.parse(code)

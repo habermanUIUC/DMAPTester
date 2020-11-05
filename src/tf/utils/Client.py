@@ -203,10 +203,18 @@ class ClientTest(object):
         error, result = self.test_file(filename, fn_name)
         if error is None:
             message = "0:0:no tests for " + fn_name
+
             # it's possible that the test matched a few possibilities
             # so search for the exact match
+
+            # a test can have a name or a description (via docstring)
+            # a test can be called using the test name (function name)
+            # but if the docstring is using a verbose string, it won't match
+            # the unittest uses the docstring as the name of the test
+
+            only_one = len(result['tests'])
             for t in result['tests']:
-                if t['name'] == fn_name:
+                if t['name'] == fn_name or only_one:
                     score = t.get('score', 0)
                     max_score = t.get('max_score', 100)
                     output = t.get('output', "")
