@@ -219,7 +219,9 @@ class ClientTest(object):
                     max_score = t.get('max_score', 100)
                     output = t.get('output', "")
                     if score == max_score:
-                        output = "Passed " + output
+                        # hints will have 0 score, 0 max_score
+                        if score != 0:
+                            output = "Passed " + output
                     else:
                         output = "Incomplete " + output
                     message = "{}:{}:{}".format(score, max_score, output.strip())
