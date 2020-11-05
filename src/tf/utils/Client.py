@@ -212,7 +212,7 @@ class ClientTest(object):
             # but if the docstring is using a verbose string, it won't match
             # the unittest uses the docstring as the name of the test
 
-            only_one = len(result['tests'])
+            only_one = len(result['tests']) == 1
             for t in result['tests']:
                 if t['name'] == fn_name or only_one:
                     score = t.get('score', 0)
